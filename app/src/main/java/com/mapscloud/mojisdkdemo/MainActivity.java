@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.mapscloud.mojisdkdemo.bean.MojiWeatherBean;
 import com.mapscloud.mojisdkdemo.net.NetWorkMate;
 import com.mapscloud.mojisdkdemo.net.NetWorkService;
+import com.mapscloud.mojisdkdemo.utils.Utils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import rx.Observable;
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private double lat = 39.91488908;
     private double lon = 116.40387397;
     private static String key = NetWorkMate.KEY;
-    private long date;
+    private static long date = System.currentTimeMillis();
 
 
     @Override
@@ -31,11 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button bt_miji_weather = findViewById(R.id.bt_miji_weather);
         bt_miji_weather.setOnClickListener(this);
         tv_weather_content = findViewById(R.id.tv_weather_content);
-        date = System.currentTimeMillis();
         String keystr = NetWorkMate.PASSWORD + date + lat + lon;
-        Log.i(TAG, "拼接字段:" + keystr);
-//        key = Utils.getMD5Str(keystr);
-        Log.i(TAG, "MD5值:" + key);
+        key = Utils.getMD5(keystr);
     }
 
     @Override
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 NetWorkService retrofitService = NetWorkMate.getInstance().createRetrofitService(NetWorkMate.BSSEURL);
                 final Observable<MojiWeatherBean> mojiWeather =
                         retrofitService.getMojiWeather(
-                                (long) 0,
+                                date,
                                 NetWorkMate.TOKEN,
                                 key,
                                 lat,
